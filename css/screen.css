@@ -43,6 +43,8 @@
     --color-neutral-xx-dark: #4b4c60;
     --color-neutral-xxx-dark: #35374d;
     --color-neutral-xxxx-dark: #20223a;
+
+    --global-color-alpha-x-transparent: rgba(51, 133, 255, .2);
  
     /* Shadows */
     --shadow-color: #20223a15;
@@ -710,11 +712,11 @@ input::placeholder {
 */
  
 .c-option-list {
- 
+    margin-bottom: 24px;
 }
  
 .c-option-list__item {
- 
+    margin-bottom: 12px;
 }
  
 /*
@@ -742,7 +744,7 @@ input::placeholder {
   width: 16px;
   height: 16px;
   margin-right: 8px;
-  border: 1px solid var(--color-neutral-xxx-light);
+  border: 1px solid var(--custom-option-borderColor);
   box-shadow: var(--inset-shadow);
   border-radius: var(--radius);
 }
@@ -783,7 +785,7 @@ input::placeholder {
 /* hover state */
 
 .c-custom-option__fake-input:hover{
-  border-color: var(--color-neutral-xx-light);
+    --custom-option-borderColor: var(--custom-option-hover-borderColor);
 }
 
 /* focused and active state */
@@ -798,19 +800,95 @@ input::placeholder {
     custom toggle
 */
 
-.c-toggle{
+.c-custom-toggle{
+    --toggle-translateX: 0;
+    --toggle-borderColor: var(--color-neutral-xxx-light);
+    --toggle-backgroundColor: var(--color-neutral-xxxx-light);
 
+    --toggle-boxShadow: 0 0 0 0; /* Standaard 'lege' box shadow */
+    --toggle-boxShadowColor: var(--global-color-alpha-x-transparent);
+
+    display: flex;
+    align-items: center;
 }
 
 .c-custom-toggle__fake-input{
-  display: block;
-  border: 1px solid var(--color-neutral-xxxx-light);
-  background-color: var(--color-neutral-xxx-light);
-  border-radius: 24px;
-  width: 48px;
-  height: 24px;
+    display: block;
+    width: 48px;
+    height: 24px;
+
+    margin-right: 16px;
+
+    border: 1px solid var(--toggle-borderColor, var(--color-neutral-xxx-light));
+    background: var(--toggle-backgroundColor, var(--color-neutral-xxxx-light));
+    border-radius: 24px;
+    transition: all 200ms ease-out; /* Voor de kleur die aanpast */
 }
- 
+
+.c-custom-toggle__fake-input::after{
+    content: ''; /* Verplicht voor elke ::before of ::after ! */
+    display: block;
+
+    height: 22px; /* 24px van parent - 1px bovenaan (border) en 1px onderaan (border) */
+    width: 22px;
+
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+    transform: translateX(var(--toggle-translateX));
+
+    will-change: transform; /* Puur voor de performance, de browser weet dat dit kan aanpassen */
+    transition: transform 200ms ease-out;
+}
+
+/* .c-option--hidden:checked + .c-custom-toggle .c-custom-toggle__fake-input::after{
+    transform: translateX(24px);
+} */
+
+.c-option--hidden:checked + .c-custom-toggle{
+    --toggle-translateX: 24px; /* De ::after zal aanpassen, want die volgt de scope van de parent! */
+    --toggle-borderColor: var(--color-alpha-dark);
+    --toggle-backgroundColor: var(--color-alpha);
+    --toggle-boxShadow: 0 0 0 4px; /* Standaard 'lege' box shadow */
+}
+
+.c-option--hidden.has-error + .c-custom-toggle{
+    --toggle-borderColor: red;
+    --toggle-backgroundColor: crimson;
+}
+
+.c-toggle-list__item + .c-toggle-list__item{
+    margin-top: 24px;
+}
+
+.c-custom-toggle--inverted{
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.c-custom-toggle--inverted .c-custom-toggle__fake-input {
+    margin-right: 0;
+}
+
+/* Custom Select */
+.c-custom-select{
+    display: block;
+    position: relative;
+}
+
+.c-custom-select__symbol{
+    position: absolute;
+    right: 12px;
+    top: 12px;
+
+    width: 24px;
+    height: 24px;
+
+    fill: var(--color-neutral-x-light);
+    pointer-events: none;
+}
+
 /*------------------------------------*\
 #UTILITIES
 \*------------------------------------*/
